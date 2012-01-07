@@ -1,0 +1,4 @@
+#! /bin/sh
+make -f Makefile.S3 install
+make -f Makefile.S3 load
+make -f Makefile.S3 clean

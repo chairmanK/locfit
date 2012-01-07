@@ -1,0 +1,331 @@
+\beginDoc:
+name:
+        fitted.locfit 
+Title:
+        Fitted values of a locfit object.
+Usage:
+        fitted.locfit(object)
+Arguments:
+  object: a \Co{"locfit"} object.  
+        
+Value:
+        Evaluation of the fit at the original dataset. This requires
+        the original dataframe; if this has been changed after the
+        fit was computed, the result is incorrect.
+Examples:
+        This is equivalent to \Co{predict(object,x)}.
+See Also:
+        \Co{locfit}, \Co{predict.locfit}.
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        locfit 
+Title:
+        Local Fitting: Density estimation, Hazard rates and regression.
+Usage:
+        locfit(formula, data =, weights =, cens =, base =, subset, xlim,
+        flim, scale =, alpha, ev =, deg =, family, link =, maxk =, kern =,
+        kt =, itype =, mint =, maxit =, cut =, dc =, geth =, mg =,
+        deriv =)
+Arguments:
+  formula: Formula giving the set of predictors on the right hand side, and 
+        (optional) response on the left.  
+  data: Data Frame where the data can be found.  
+  weights: Prior weights for observations (reciprocal of variance, or sample 
+        size).  
+  cens: censoring indicators for hazard rate or censored regression.  
+  base: Baseline parameter estimate.  
+  subset: Use subset of observations.  
+  xlim: For density estimation, optional vector of lower and upper bounds for 
+        variables.  
+  flim: A vector of lower and upper bounds for the evaluation structure.  
+        Defaults to the data range.  
+  scale: A scale to apply to each variable. Effectively, the data is 
+        transformed before fitting, by dividing each component of the 
+        independent variable by the corresponding component of \Co{scale}.  
+  alpha: Smoothing parameter.  
+  ev:   Evaluation Structure, default = \Co{"tree"}. Also available are 
+        \Co{"phull"}, \Co{"data"}, \Co{"grid"}, \Co{"kdtree"}, \Co{"kdcenter"}, 
+        \Co{"crossval"}.  
+  deg:  Degree of local polynomial. Default = \Co{2} (local quadratic).  
+  family: What to estimate? Local likelihood families are \Co{"gaussian"}; 
+        \Co{"binomial"}; \Co{"poisson"}; \Co{"gamma"} and \Co{"geom"}. Density 
+        and rate estimation families are \Co{"dens"}, \Co{"rate"} and 
+        \Co{"hazard"} (hazard rate).  A default is selected based on whether or 
+        not \Co{"y"} and \Co{"cens"} arguments are given; specifying a 
+        \Co{family} argument overrides the default.  
+  link: Link function for local likelihood fitting. Depending on the family, 
+        choices may be \Co{"ident"}, \Co{"log"}, \Co{"logit"}, \co{"inverse"}, 
+        \Co{"sqrt"}.  
+  maxk: Controls space assignment for evaluation structures, default = \Co{50} 
+  kern: Weight function, default = \Co{"tcub"}. Others are \Co{"rect"}, 
+        \Co{"epan"}, \Co{"bisq"} and \Co{"gauss"}. Some may not always work, 
+        especially in density estimation.  
+  kt:   Kernel type, \Co{"sph"} (default); \Co{"prod"}; \Co{"ang"}; 
+        \Co{"left"}; \Co{"right"}. In the multivariate case, \Co{"prod"} uses a 
+        simplified product model which speeds up computations.  \Co{"ang"} is 
+        used to specify angular data. \Co{"left"} and \Co{"right"} produce 
+        one-sided smooths.  
+  itype: Integration type for density estimation, default = \Co{"default"} 
+  mint: Points for numerical integration rules. default = \Co{20} 
+  maxit: Maximum iterations for density estimation. default = \Co{20} 
+  cut:  Refinement parameter for adaptive partitions. Default \Co{0.8}; smaller 
+        values result in more refined partitions.  
+  dc:   Derivative adjustment.  
+  geth: Don't use! 
+  mg:   Margin size for grids.  
+  deriv: Don't use! 
+        
+Value:
+        An object of class locfit.
+Examples:
+        locfit(~rnorm(100))                # density estimation
+        locfit(~rexp(100),cens=rep(0,100)) # hazard estimation
+        x <- runif(100)
+        y <- dnorm(5*x)+rnorm(100)/5
+        locfit(y~x)                        # local regression
+See Also:
+        \Co{plot.locfit}, \Co{print.locfit}, \Co{summary.locfit}.
+        A home page containing a detailed description and examples is
+        \Co{http://cm.bell-labs.com/stat/project/locfit/}.
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        plot.locfit 
+Title:
+        Plot an object of class \Co{locfit}
+Usage:
+        plot.locfit(x, xlim, pv, tv, mpv, mtv =, deriv =, se.fit =, tr,
+        what =, get.data =, ...)
+Arguments:
+  x:    Object of class \Co{locfit} 
+  xlim: Plotting limits. Eg. \Co{xlim=c(0,1,0,1)} plots over the unit square in 
+        two dimensions. Default is bounding box of the data.  
+  pv:   Panel variables, to be varied within each panel of a plot.  May be 
+        specified as a character vector, or variable numbers.  There must be 
+        one or two panel variables; default is all variables in one or two 
+        dimensions; Variable 1 in three or more dimensions.  
+  tv:   Trellis variables, to be varied from panel to panel of the plot.  
+  mpv:  Number of points on the plot grid for panel variables. Default 100 in 
+        one dimension; 40 in two or more dimensions.  
+  mtv:  Number of points for trellis variables; default 6.  
+  deriv: derivative argument, default \Co{numeric(0)}. See \Co{predict.locfit} 
+        documentation for more details.  
+  se.fit: Should variability bands be plotted? Default \Co{F}. This is 
+        presently available for one predictor.  
+  tr:   Transformation function to use for plotting. Default is the inverse 
+        link function, or the identity function if derivatives are requested.  
+  what: What to plot. See \Co{"predict.locfit"}.  
+  get.data: Add original data to the plot.  
+  ...:  Other arguments to \Co{plot.locfit.1d}, \Co{plot.locfit.2d} or 
+        \Co{plot.locfit.3d} as appropriate.  
+  Notes: The \Co{plot.locfit} function generates grids of ploting points, and 
+        generates a \Co{"locfitpred"} object through a call to 
+        \Co{"predict.locfit"}; this object is then plotted through a call to 
+        \Co{plot.locfit.1d}, \Co{plot.locfit.2d} or \Co{plot.locfit.3d}, which 
+        are plot methods for \Co{"locfitpred"} objects.  
+        
+Examples:
+        x <- rnorm(100)
+        y <- dnorm(x)+rnorm(100)/5
+        plot(locfit(y~x),vband=T)
+        x <- cbind(rnorm(100),rnorm(100))
+        plot(locfit(~x),type="persp")
+See Also:
+        \Co{locfit}, \Co{plot.locfit.1d}, \Co{plot.locfit.2d},
+        \Co{plot.locfit.3d}, \Co{lines.locfit}, \Co{predict.locfit}
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        plot.locfit.1d 
+Title:
+        One dimensional plots of \Co{"locfitpred"} objects.
+Usage:
+        plot.locfit.1d(x, ...)
+Arguments:
+  x:    Object of class \Co{"locfitpred"} with dimension 1. x values for plot.  
+        
+  ...:  Additional arguments, graphical parameters etc passed to 
+        \Co{plot.default}.  
+        
+See Also:
+        \Co{plot.locfit}, \Co{predict.locfit}, \Co{lines.locfit}.
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        plot.locfit.2d 
+Title:
+        Two dimensional plots of \Co{"locfitpred"} objects.
+Usage:
+        plot.locfit.2d(x, type =, vnames, ...)
+Arguments:
+  x:    Object of class \Co{"locfitpred"} in two dimensions.  
+  type: Type of plot. Default = \Co{"contour"}; can also be \Co{"persp"}.  
+  vnames: Variable names.  
+  ...:  Additional arguments to \Co{contour} or \Co{persp} functions as 
+        appropriate.  
+        
+See Also:
+        \Co{plot.locfit}, \Co{lines.locfit}, \Co{predict.locfit}
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        plot.locfit.3d 
+Title:
+        Plots of "locfitpred" objects using Trellis displays
+Usage:
+        plot.locfit.3d(x, pv, tv, type =, ... )
+Arguments:
+  x:    Object of class "locfitpred", should be evaluated over a grid.  
+  pv:   panel variable numbers, varied within panels.  
+  tv:   trellis variable numbers, varied between panels.  
+  type: Type of plot. If there is one panel variable, ignored. With two panel 
+        variables, if \Co{type="level"}, the trellis \Co{levelplot} function is 
+        used. If \Co{type="persp"} or \Co{type="wireframe"}, the trellis 
+        \Co{wireframe} function is used.  
+        
+Examples:
+        ##< Examples of the use of plot.locfit.3d >
+See Also:
+        \Co{plot.locfit}
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        predict.locfit 
+Title:
+        Interpolate a locfit object to new locations.
+Usage:
+        predict.locfit(object, newdata, se =, deriv =)
+Arguments:
+  object: object of class \Co{locfit} 
+  newdata: matrix or data frame of values to be predicted at.  
+  se:   should standard errors be predicted? Default = \Co{F}. Note standard 
+        errors are not available for hazard rate estimation, and are only 
+        approximations in some other cases.  
+  deriv: Derivative specification. E.g. \Co{deriv=c(1,1)} specifies the second 
+        derivative with respect to x1, while \Co{deriv=2} specifies the first 
+        partial derivative with respect to x2. The restrictions are that the 
+        order of the derivative must be less than or equal to the order of 
+        local polynomial fitted. When these are equal, linear interpolation of 
+        the fitted values is used, so the surface may be rough.  
+        
+Value:
+        Either a vector of the predicted values, or matrix with first column
+        the predicted values; second column the standard errors.
+Examples:
+        < Examples of the use of predict.locfit >
+See Also:
+        locfit
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        print.locfit 
+Title:
+        Print an object of class \Co{locfit}.
+Usage:
+        print.locfit(x, tr, what)
+Arguments:
+  x:    object of class \Co{locfit}.  
+  tr:   Transformation, as in \Co{plot.locfit}.  
+  what: What to print; default \Co{c("x", "f", "h", "nlx")}. A matrix with the 
+        requested components is printed; available components are \Co{"x"} (the 
+        fit points); \Co{"f"} (the fitted values); \Co{"f1"} (the first 
+        derivatives); \Co{"f2"} (the second derivatives) \Co{"h"} (bandwidths) 
+        and \Co{"nlx"} (length of the l(x) vector).  Note \Co{"f1"} and 
+        \Co{"f2"} only work right in one dimension and if polynomials of 
+        appropriate degree are fitted.  
+        
+Value:
+        <Value returned is ...>
+Examples:
+        < Examples of the use of print.locfit >
+See Also:
+        \Co{locfit}
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        residuals.locfit 
+Title:
+        Compute residuals from a \Co{locfit} object.
+Usage:
+        residuals.locfit(object, x, y)
+Arguments:
+  object: argument, no default.  
+  x:    Original \Co{x} variable.  
+  y:    Original \Co{y} variable.  
+        
+Value:
+        ##<Value returned is ...>
+Examples:
+        ##< Examples of the use of residuals.locfit >
+See Also:
+        \Co{locfit}
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:
+\beginDoc:
+name:
+        summary.locfit 
+Title:
+        Summary of a \Co{"locfit"} object.
+Usage:
+        summary.locfit(object)
+Arguments:
+  object: Object of class \Co{"locfit"}.  
+        
+Value:
+        ##<Value returned is ...>
+Examples:
+        x <- rnorm(100)
+        summary(locfit(~x))
+See Also:
+        \Co{locfit}
+Key Words:
+        locfit
+docClass:
+        function 
+        
+\endDoc:

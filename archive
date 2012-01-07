@@ -1,0 +1,29 @@
+#!/bin/sh
+FILES="-T locfit/files"
+CLEAN=clean
+OUT=locfit
+
+case $1 in
+all) FILES=locfit
+     CLEAN=very-clean
+     OUT=locfit-all
+     ;;
+bin) FILES="-T locfit/files-bin"
+     CLEAN=clean
+     OUT=locfit-bin
+     ;;
+nda) FILES="-T locfit/files-nda"
+     CLEAN=clean
+     OUT=locfit-nda
+     ;;
+win) FILES="-T locfit/files-win"
+     CLEAN=clean
+     OUT=locfit-win
+     ;;
+esac
+
+make $CLEAN
+cd ..
+gtar -c $FILES | gzip - > $OUT.tgz
+mv $OUT.tgz locfit
+cd locfit

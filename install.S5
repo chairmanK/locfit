@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# This installation script is designed for S-Plus 5 and S-Plus 6
+# on unix systems. Due to problems with S-Plus 5 distributions,
+# the compilation may not work on all platforms.
+# 
+# Instructions:
+# 1) Download (done)
+# 2) Unpack.  (done)
+#      If you have permission, (e.g. System Admin's) move the
+#      locfit directory to
+#      $SHOME/library/locfit
+# 3) Ensure SHOME is properly set.
+# 4) If you start S-Plus with a command other than Splus5, you'll
+#    need to change the SPLUS definition below.
+# 5) Run this installation script,
+#      ./install.S5
+# 6) make clean
+#      will remove unnecessary object files.
+# 7) If working under the $SHOME/library directory, add the line
+#      locfit       Local Regression and Likelihood
+#    to $SHOME/library/README
+#
+#
+
+SPLUS=Splus5
+MAKE=gmake
+
+if test -z $SHOME
+then
+        SHOME=`$SPLUS SHOME`
+        export SHOME
+        echo "Set SHOME =" $SHOME
+fi
+
+if test ! -d .Data
+then
+	mkdir .Data
+fi
+
+if test ! -d .Data/__Meta
+then
+	mkdir .Data/__Meta
+fi
+
+if test ! -d .Data/__Help
+then
+	mkdir .Data/__Help
+fi
+
+$MAKE -f Makefile.S5
+$SPLUS QINSTALL .Data S/locfit.s S/locfitdat.s S/locfit4.s S/firstlib5.s

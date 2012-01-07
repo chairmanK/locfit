@@ -1,0 +1,239 @@
+e 3.1
+t Local Regression with plot
+c locfit NOx~E data=ethanol alpha=0.5
+c plotfit data=T
+f
+e 3.3
+t Local Regression; print results
+c locfit NOx~E data=ethanol
+c prfit x fhat h nlx
+f
+e 3.4
+t Local Regression; predict at additional values
+c locfit NOx~E data=ethanol alpha=0.5
+c predict E=0.6,0.8,1.0
+f
+e 3.5
+t Compute GCV score from a fit
+c locfit NOx~E data=ethanol alpha=0.5
+c dp
+c mi[1]*(-2*like)/(mi[1]-infl)^2
+d dp is a variable defined by locfit, pointing to the
+d fit's parameter vector. like and infl point to the
+d individual likelihood and tr(L) components.
+d mi is an integer parameter vector; mi[1] is the sample
+d size.
+f
+e 3.6
+t Residual plots for Local Regression
+c locfit NOx~E data=ethanol alpha=0.8
+c res=residuals
+c locfit res~E alpha=0.2
+c plotfit data=T
+d Repeat for alpha=0.6, 0.4 and 0.2!!
+f
+e 3.7
+t Bivariate Local Regression; Ethanol Dataset
+c locfit NOx~E+C data=ethanol alpha=0.5 scale=0
+c plotfit data=T
+h sleep 3
+c plotfit type=w
+f
+e 4.1
+t Local Logistic Regression
+n
+d use family=binomial argument to fit a logistic model
+f
+e 4.2
+t Local Poisson Regression; mine dataset
+c locfit frac~extrp data=mine family=poisson deg=1 alpha=0.6
+c plotfit data=T band=g
+f
+e 4.3
+t Local Logistic Regression; mortality dataset
+c locfit deaths~age weights=n data=morths family=binomial alpha=0.5
+c plotfit data=T band=g
+f
+e 4.4
+t Residuals for Local Logistic Regression
+c locfit deaths~age weights=n data=morths family=binomial alpha=0.5
+c res=residuals type=deviance
+c plotdata age res type=b main=deviance
+c res=residuals type=pearson
+h sleep 3
+c plotdata age res type=b main=pearson
+c res=residuals type=response
+h sleep 3
+c plotdata age res type=b main=response
+c res=residuals type=ldot
+h sleep 3
+c plotdata age res type=b main=ldot
+f
+e 4.5
+t AIC plot for mine dataset
+c setplot 0 track vari -2*like+2*infl
+c readdata mine
+c for a=(20:8)/20
+c locfit frac~extrp family=poisson deg=1 alpha=a
+c endfor
+c setplot 0
+d Note the use of  setplot 0 track ...  to track the
+d AIC statistic for each fit. The second  setplot 0
+d turns off the track.
+f
+e 5.1
+t Local Constant (kernel) density estimation
+n
+d Use deg=0 with the locfit command to perform k.d.e.
+f
+e 5.2
+t One Dimensional Density Estimation
+c locfit ~geyser data=geyser alpha=0.1,0.8 flim=1,6
+c plotfit m=200 xlab=Eruption_Duration zlab=Density data=T
+d Note vertical axis is the z axis, so the label is given with zlab.
+f
+e 5.3
+t Multivariate Density Estimation
+c locfit ~x0+x1 data=trimod alpha=0.35
+c plotfit type=w
+f
+e 6.1
+t Derivative estimation for a density
+c readdata geyser
+c z=seq(1,6,200)
+c locfit ~geyser alpha=0.1,0.6 flim=1,6
+c p1=predict geyser=z
+c locfit ~geyser alpha=0.1,0.6 flim=1,6 deriv=1
+c p2=predict geyser=z
+c plotdata z p1*p2 type=l xlab=Duration ylab=Derivative_Density
+d Note that p1 is the density estimate on a grid, while p2
+d estimates the derivative of log(density). Thus, p1*p2 estimates
+d the derivative of the density.
+f
+e 6.2
+t Periodic smoothing plus trend - additive model
+c readdata co2
+c ym=year+month/12
+c locfit co2~ym alpha=0.5 deg=1
+c plotfit win=1 data=T xlab=date ylab=co2
+c res=residuals
+c locfit res~ang(ym) scale=1/(2*3.141593) alpha=0,2
+c plotfit ym=0,1 ylab=Annual_Component
+f
+e 6.3
+t Periodic smoothing plus trend - bivariate method
+c readdata co2
+c ym=year+month/12
+c locfit co2~ang(month)+ym scale=6/3.141593,10 alpha=0.2
+c plotfit
+f
+e 6.4
+t Change point (discontinuity) estimation
+c readdata penny
+c midp=(1945:1988)+0.5
+c locfit thickness~left(year) alpha=0,10 deg=1 ev=midp
+c pl=predict where=fitp
+c locfit thickness~right(year) alpha=0,10 deg=1 ev=midp
+c pr=predict where=fitp
+c plotdata midp (pl-pr)^2 type=b
+f
+e 7.1
+t Local constant (kernel) hazard rate estimation
+n
+d Use deg=0 to fit a local constant model.
+f
+e 7.2
+t Hazard Rate Estimation
+c locfit ~surv cens=cens family=hazard data=heart alpha=0.4 xlim=0,100000
+c plotfit m=300 zlim=0,0.004 xlab=Survival_Time zlab=Hazard_Rate data=T
+d Note zlim and zlab for the vertical axis limits and label.
+f
+e 7.6
+t Censored Local Likelihood - Cricket dataset.
+c locfit runs~day cens=no data=border family=geom alpha=0.7
+c plotfit data=T
+d Sorry, no distinction between censored/uncensored data on plot!
+f
+e 7.7
+t Censored Local Likelihood - Heart dataset
+c readdata heart
+c yy=(surv+0.5)^0.625 y=log(surv+0.5)
+c locfit yy~age cens=cens alpha=0.8 family=gamma
+c xnew=seq(12,64,200)
+c fhat=predict xnew
+c plotdata age y
+c plotdata xnew log(fhat)/0.625+0.3574119 add=T type=l
+d No transformation argument for plotfit yet, so must
+d construct plot manually.
+f
+e 8.1
+t Classification using Logistic Regression - Training Data
+c greyscale red blue
+c locfit y~x1+x2 data=cltrain family=binomial scale=0
+c plotfit split=0.5
+c plotdata x1 x2 y add=T type=q
+c fit=fitted
+c fit=fit>0.5
+c table y fit
+d Note: must add data to plot separately with type=q to identify classes.
+f
+e 9.3
+t Maximal deviation test for effect
+c readdata heart
+c y=(surv+0.5)^0.625
+c locfit y~age cens=cens alpha=0.8 family=gamma deriv=1
+c plotfit xlab=Age_at_Transplant zlab=Local_Slope
+c kappa
+c c=crit
+c xnew=seq(min(age),max(age),100)
+c se=predict xnew what=nlx
+c plotdata xnew z=-c*se z2=c*se add=T type=ll
+d The confidence bands assuming no effect are added by the
+d plotdata command. Note the bands are provided as z and z2,
+d not y and y2, since the fit is plotted on the x-z axis.
+f
+e 10.2
+t Density estimation; claw density
+c readdata claw54
+c locfit ~claw54 deg=0 kern=gauss ev=grid mg=100 alpha=0,0.315 flim=-3.5,2.7
+c plotfit data=T main=h=0.315
+h sleep 3
+c locfit ~claw54 deg=0 kern=gauss ev=grid mg=100 alpha=0,0.985 flim=-3.5,2.7
+c plotfit data=T main=h=0.985
+d Doesn't draw the true density yet!
+f
+e 11.1
+t Variable order adaptive fit
+c readdata ethanol
+c locfit NOx~E alpha=0.3 deg=0,3
+c plotfit data=T
+c knots x=E d=deg
+c plotdata x d xlab=E ylab=Degree win=1
+f
+e 11.2
+t Locally adaptive local regression - Dopler example
+d This takes a while to run - be patient!
+d Since data is generated, plots won't exactly match published versions.
+c x=seq(0,1,2048)
+c y=20*sqrt(x*(1-x))*sin(6.283185*1.05/(x+0.05))+rnorm(2048)
+c plotdata x y
+c locfit y~x alpha=0,0,2 maxk=500 acri=cp
+c plotfit m=2048
+c locfit y~x alpha=0,0,log(2048) maxk=500 acri=cp
+c plotfit m=2048
+c res=residuals
+h sleep 3
+c plotdata x res ylab=Residuals
+c knots x=x h=h
+h sleep 3
+c plotdata x h
+f
+e 13.4
+t Minimax local regression
+c readdata mmsamp                              
+c locfit y~x deg=1 kern=minmax alpha=4000 ev=grid mg=100 flim=0,1
+c plotfit data=T win=1 main=Minimax_Fit
+c locfit y~x deg=1 alpha=0,0.05 ev=grid mg=100 flim=0,1
+c plotfit data=T win=2 main=Constant_Bandwidth_Fit
+d Reducing alpha may lead to a smoother fit!
+f

@@ -1,0 +1,9 @@
+SHELL=/bin/sh
+
+include $(SHOME)/library/S_MAKE_FLAGS
+
+S.so: FORCE
+	cd src-s; $(MAKE) -f Makefile.S4 locfit-s; cd ..
+	cd src;   $(MAKE) -f Makefile.S4 locfit-s; cd ..
+	$(SHOME)/cmd/LIBRARY S.so  $(OBJ) src/*.o src-s/*.o $(LOCAL_LIBS)
+FORCE:

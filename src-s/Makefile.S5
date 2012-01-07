@@ -1,0 +1,12 @@
+INCLUDEDIR=../include
+include $(SHOME)/library/S_FLAGS
+include LOCAL_FILES
+
+catch:
+	@ echo "####  Do not run make in this directory."
+locfit-s: $(OBJ)
+	
+.c.o:
+	$(CC) $(CFLAGS) -DSVERSION -I$(INCLUDEDIR) -c $<
+clean:
+	rm -f *.o

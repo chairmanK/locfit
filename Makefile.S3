@@ -1,0 +1,182 @@
+# Makefile created by S-PLUS utility CHAPTER, version 3.25
+# S-PLUS Version 3.3 Release 1 for Silicon Graphics Iris, IRIX 5.2 : 1995 
+
+SHOME=/usr/splus
+
+# WHICH_LOAD=static.load
+# WHICH_LOAD=dyn.load
+WHICH_LOAD=dyn.load.shared
+
+EXTRA_OBJ_FILES=
+EXTRA_C_NAMES=
+EXTRA_F_NAMES=
+
+# This is a Makefile produced by the S-PLUS utility CHAPTER. It guides
+# compilation of C, Ratfor and Fortran source code, loading of the resulting
+# object code, and installation of functions and helpfiles.
+# 
+# Overview: 
+# ========
+# 
+# You will need to attend to a few 'make' macro settings at the top of this
+# file first.  See the Detailed Instructions below for these. Then, if you
+# want to compile and load the default set of C and Fortran routines, type
+# (1) 'make install' to install functions on .Data and thereby enable
+# building of the default list of compiled routine names, then (2) 'make
+# load' to compile the object code, build the set of names to load, and load
+# this object code.  Other, secondary, 'make' targets are 'install.funs' and
+# 'install.help' ('install' makes both of those), 'clean' (remove only
+# intermediate object code) and 'virgin' (remove object code, the local
+# standalone S-PLUS executable if you built it, and the directory
+# .Data).
+# 
+# Detailed Instructions:
+# =====================
+# 
+# 1. On the line near the top that starts with "SHOME=", change the
+# directory pathname on the right of the equals sign to the pathname of the
+# top S-PLUS directory on your machine; use Splus SHOME to get this
+# pathname.
+# 
+# 2. Near the top, the macro WHICH_LOAD specifies whether 'make' targets
+# 'load' and 'all' should make
+# (a) a standalone S-PLUS binary executable named
+# "local.Sqpe" which includes the local C and Fortran code, or
+# (b) a dyn.loadable file "locfit_l.o" containing only this local code, or
+# (c) a shared library "locfit.so" containing this local code
+# and loadable with the dyn.load.shared function (this is the only form
+# of dynamic loading available on Splus 3.3 for the Iris and Dec Alpha).
+# To make a complete standalone executable, WHICH_LOAD should be set to
+# "static.load"; the other possible values are "dyn.load" and
+# "dyn.load.shared".  Make sure a # comment symbol (#) appears in front
+# of the setting you DON'T want.
+# The default has been set to "static.load".
+# 
+# Incidentally, you can always make targets 'static.load', 'dyn.load',
+# and 'dyn.load.shared' regardless of the value of WHICH_LOAD.
+# The macro just specifies what the generic targets 'load' and 'all'
+# should make.
+# 
+# 3. Near the top, the macro EXTRA_OBJ_FILES names object files (ending in
+# ".o") which should be loaded in addition to those which are part of this
+# chapter.  Add any additional object file names you want to load, separated
+# by spaces, on the right hand side of the equals sign.  There MUST be
+# corresponding C (".c"), Ratfor (".r") or Fortran (".f") files present in
+# this directory.
+# 
+# If you add file names to EXTRA_OBJ_FILES, you must also add the names of
+# the corresponding C functions or Fortran subroutines to the macros
+# EXTRA_C_NAMES and EXTRA_F_NAMES respectively, underneath EXTRA_OBJ_FILES.
+# The names added should be as they appear at the source-code level; do not
+# add leading or trailing underscores unless these are present in the
+# source-level name.
+# 
+# You won't generally need to change any more 'make' macros, or indeed
+# anything else in this Makefile.
+# 
+# 4. The file locfit_i.c is a C language source file which will ensure
+# that the make target 'load' will load C and Fortran routines referenced
+# only through .C or .Fortran calls in S functions. If locfit_i.c does
+# not exist, it will be made during 'make load' based on the objects in
+# .Data. If locfit_i.c exists already and you have since added new C
+# or Fortran routine names to EXTRA_C_NAMES and EXTRA_F_NAMES, you must
+# remove locfit_i.c so that it will get remade using this new
+# information. Do this now.
+# 
+# 5. Type 'make install.funs' to create the S functions on .Data.  This
+# must precede 'make load' in Step 6. (You can install the helpfiles at
+# this point as well by typing making 'install' instead of 'install.funs'.)
+# 
+# 6. Type 'make load'. This will build the list of routines to load, then
+# compile the C, Ratfor and Fortran source files specified by this Makefile,
+# and lastly load the routines named on the list into either a standalone
+# S-PLUS executable or a dyn.loadable file or a shared library.
+# 
+# 7. To remove unnecessary object files, type 'make clean'. This will not
+# remove the dyn.loadable file locfit_l.o, the shared library
+# locfit.so, or the standalone local.Sqpe.  To clean out everything
+# including .Data and start over, use 'make virgin'.
+# 
+# 8. See the helpfile for the "library" function in S-PLUS for hints on
+# how to install the new code as a library section.
+
+
+# ========================= End instructions. =============================
+
+default : all
+include $(SHOME)/newfun/lib/S_makefile
+chapters=../locfit
+include ./S_LOCAL_FILES
+CFLAGS=-O1 -D SVERISON -I./include
+FFLAGS=-O1 
+FUNS=force_ld.q S/locfit.s S/locfitdat.s S/fl3.s
+HELPS=locfit.d
+FLAGS=
+RM=-rm
+
+all load: $(WHICH_LOAD)
+
+static.load: locfit.a
+	Splus LOAD $(FLAGS) CHAPTERS='"$(chapters)"'
+
+dyn.load locfit_l.o: locfit.a
+	ld -r -o locfit_l.o locfit_i.o locfit.a $(FLAGS)
+	@echo dynamically loadable file in locfit_l.o
+
+dyn.load.shared locfit.so: $(SRC)
+	Splus SHLIB -o locfit.so $(SRC)
+
+locfit.a: locfit_i.o $(OBJ) 
+	Splus LIBRARY locfit.a locfit_i.o $(OBJ)
+
+locfit_i.c:
+	-mkdir .Data
+	Splus make.init locfit .Data
+
+install : install.funs install.help
+
+funs install.funs : $(FUNS) .Data
+	sed '1,$$s/\@/$$/g' S/locfit.s | Splus
+	Splus QINSTALL .Data force_ld.q S/locfitdat.s S/fl3.s
+
+force_ld.q :
+	( echo "force.loading <- function(){" ;\
+	set $(EXTRA_C_NAMES) terminator ;\
+	while test $$1 != terminator ;\
+	do \
+		echo $$1 | sed 's:.*:.C("&"):' ;\
+		shift ;\
+	done ;\
+	set $(EXTRA_F_NAMES) terminator ;\
+	while test $$1 != terminator ;\
+	do \
+		echo $$1 | sed 's:.*:.Fortran("&"):' ;\
+		shift ;\
+	done ;\
+	echo } \
+	) > $@
+
+
+# force_ld.q :
+# 	echo "force.loading <- function(){ X\
+# 		stop(\"should not be executed\") X\
+# 		# Add .C and .Fortran calls here to force routines to  X\
+# 		# be loaded. For example, .C(\"fun1\"), .Fortran(\"fun2\"). X\
+# 	}" | tr X \\012  > $@
+
+help install.help : $(HELPS) .Data/.Help
+	Splus HINSTALL .Data/.Help $(HELPS)
+	Splus help.findsum .Data
+
+.Data :
+	-mkdir $@
+.Data/.Help : .Data
+	-mkdir $@
+
+virgin : clean virgin.std
+# add additional cleanup rules/targets above here for target 'virgin'
+clean :
+	$(RM) -f $(OBJ) locfit_i.o S_load_time.[oc] core
+virgin.std :
+	$(RM) -rf .Data
+	$(RM) -f locfit.a local.Sqpe locfit_l.o locfit.so locfit_i.c force_ld.q

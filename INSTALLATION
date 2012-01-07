@@ -1,0 +1,83 @@
+/*
+ * The author of this software is Catherine Loader,
+ *   catherine@research.bell-labs.com.
+ * Copyright (c) 1996-2000 Lucent Technologies, Bell Laboratories.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose without fee is hereby granted, provided that this entire notice
+ * is included in all copies of any software which is or includes a copy
+ * or modification of this software and in all copies of the supporting
+ * documentation for such software.
+ * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHOR NOR LUCENT TECHNOLOGIES
+ * MAKE ANY REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE
+ * MERCHANTABILITY OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+ */
+
+INSTALLATION as an Splus 3.3 or 3.4 Library:
+
+1) Determine your SHOME directory (type  Splus SHOME  to be sure).
+1) Unpack the shar archive in a new locfit directory (you've
+   already done that!).
+   Site administrators, use $SHOME/library/locfit.
+2) If your SHOME is **not** /usr/splus, you need to change
+   SHOME  at the top of Makefile.S3.
+3) Install with the unix command
+   sh install.S3
+4) (for Site Administrators) Add the line
+   locfit        Local Regression, Likelihood and Density Estimation
+   to the file $SHOME/library/README.
+5) (Optional; check locfit is working first!) Remove the source files.
+   On your locfit installation directory, remove everything **except**
+   the locfit.so file and the .Data subdirectory and contents.
+
+That's it! To access the locfit:
+1) If you run S-Plus from your locfit installation directory,
+   use the command
+   > dyn.load.shared("./locfit.so")
+2) If you run S-Plus from another directory, use
+   > library("locfit",first=T,lib.loc=getenv("HOME"))
+   Note the lib.loc argument should be the parent
+   of your locfit directory; this can be omitted
+   if you followed the Site Administrator installation.
+
+
+INSTALLATION as an Splus 5 Library:
+
+  I've been able to install as a library for S-Plus 5.0 and 5.1 under
+  Irix, Linux and SunOS. The procedure should simply follow S-4, but
+  the S-Plus people seem to have made unnecessary changes, introduced
+  bugs e.t.c. to the library installation routines (whatever happened
+  to "if it ain't broke, don't fix it"?).
+
+  Please email me (catherine@research.bell-labs.com) with any problems.
+
+  1) Ensure the SHOME environment variable is properly set.
+  2) Run the <tt>install.S5</tt> script:
+     % ./install.S5
+
+  LOCFIT should now be ready to use. From another directory, the library
+  is attached to Splus with
+  > library("locfit",first=T)
+  with a lib.loc argument if necessary.
+
+  If you downloaded a binary version, Locfit should be ready to run
+  as is. If you have permission, place the locfit directory in
+  $SHOME/library/locfit.
+  For IRIX users, the compilation won't work, unless you have more luck
+  than me. Download the binary S.so.irix file from my web pages, and
+  save as S.so. This was compiled in S-4, and seems to work with S-Plus 5.
+
+INSTALLATION, C-Locfit stand alone version:
+
+At the unix prompt, type
+% make locfit
+% mkdir LFData
+% locfit
+locfit> run install.cmd
+locfit>    you're ready to go!
+
+If your X files are *not* in /usr/X11R6/lib, you'll need to change the
+XLDFLAGS line in the Makefile.
+
+Locfit can also be compiled with ASCII graphics instead of X:
+% make locfit-nox

@@ -1,0 +1,54 @@
+SRC= adap.c band.c \
+     density.c  \
+     dens_haz.c \
+     dens_int.c \
+     dens_odi.c \
+     dist.c \
+     ev_atree.c ev_kdtre.c ev_main.c \
+     ev_interp.c ev_trian.c \
+     family.c fitted.c \
+     frend.c     \
+     lf_dercor.c \
+     lf_fitfun.c \
+     lf_robust.c \
+     lfstr.c \
+     lf_vari.c \
+     linalg.c locfit.c \
+     m_chol.c  \
+     m_eigen.c \
+     m_jacob.c \
+     m_max.c   \
+     math.c minmax.c \
+     nbhd.c pcomp.c preplot.c simul.c startlf.c \
+     scb.c \
+     scb_cons.c \
+     solve.c \
+     strings.c \
+     wdiag.c weight.c
+OBJ= adap.o band.o \
+     density.o  \
+     dens_haz.o \
+     dens_int.o \
+     dens_odi.o \
+     dist.o \
+     ev_atree.o ev_kdtre.o ev_main.o \
+     ev_interp.o ev_trian.o \
+     family.o fitted.o \
+     frend.o     \
+     lf_dercor.o \
+     lf_fitfun.o \
+     lf_robust.o \
+     lfstr.o \
+     lf_vari.o \
+     linalg.o locfit.o \
+     m_chol.o  \
+     m_eigen.o \
+     m_jacob.o \
+     m_max.o   \
+     math.o minmax.o \
+     nbhd.o pcomp.o preplot.o simul.o startlf.o \
+     scb.o \
+     scb_cons.o \
+     solve.o \
+     strings.o \
+     wdiag.o weight.o

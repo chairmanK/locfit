@@ -1,0 +1,10 @@
+INCLUDEDIR=../include
+CFLAGS=
+include ./LOCAL_FILES
+
+locfit: $(OBJ)
+	
+.c.o:
+	$(CC) $(CFLAGS) -DINTERFACE -I$(INCLUDEDIR) -c $<
+clean:
+	rm *.o

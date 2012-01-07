@@ -1,0 +1,16 @@
+/*
+ *   Copyright (c) 1998-2000 Lucent Technologies.
+ *   See ../README file for details.
+ */
+
+
+This dircetory contains the main program, i/o functions and graphics
+functions for the ASCII window and the x windows interface.
+
+If readline is present on your system (does the /usr/include/readline
+directory exist?), this can be enabled by adding #define READLINE
+at the top of main.c, and in the top level Makefile, change the
+LDFLAGS line to
+LDFLAGS -lm -lreadline
+This allows command line editing and history.
+

@@ -1,0 +1,33 @@
+bad.dat
+chemdiab.dat
+claw54.dat
+       cldem.dat
+  co2.dat
+    diab.dat
+ "dv",
+ "fw", 
+  geyser_rd.dat
+	   insect.dat
+	  kangaroo.dat
+ "kdeb",
+ "knots",
+ "lflim",
+  livmet.dat
+"locfit.add",
+ "locfit.matrix",
+    "locfit.quasi",
+ "locfit.robust",
+	mmsamp.dat
+ "panel.locfit",
+ "panel.xyplot.lf",
+ "plot.eval",
+ "plot.scb",
+ "print.gcvplot", 
+    "print.preplot.locfit",
+ "print.scb",
+    "regband",
+ "scb",
+ "sjpi")
+"store"
+    "summary.preplot.locfit",
+   trimod.dat

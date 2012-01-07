@@ -1,0 +1,10 @@
+INCLUDEDIR=../include
+OBJ= main.o io.o dev-x.o
+
+catch:
+	@ echo "####  Do not run make in this directory."
+
+locfit-x: $(OBJ)
+	
+.c.o:
+	$(CC) $(CFLAGS) -DCVERSION -DXWIN -I$(INCLUDEDIR) -c $<
